@@ -10,7 +10,6 @@ const axios = require("axios");
 
 const store = {};
 
-
 // server.js or index.js
 const express = require("express");
 const app = express();
@@ -21,10 +20,6 @@ app.get("/", (_, res) => {
 });
 
 app.listen(PORT, () => console.log(`✅ Web server listening on port ${PORT}`));
-
-
-
-
 
 const getMessage = (key) => {
   const { id } = key;
@@ -39,8 +34,14 @@ function isActiveHours() {
   return hour >= 7 && hour < 23;
 }
 
-const fetchGeminiReply = async (msg) => {
+// 🤖 Gemini AI Handler
+const { buildPrompt } = require("./buildPropmt");
+
+const fetchGeminiReply = async (msg, senderName) => {
+  console.log("user : ", msg);
   try {
+    const prompt = buildPrompt(msg, senderName);
+
     const response = await axios.post(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -48,7 +49,7 @@ const fetchGeminiReply = async (msg) => {
           {
             parts: [
               {
-                text: `Act like Jatin Poriya – a chill, friendly, tech-savvy Gujarati dev. Reply to: ${msg}`,
+                text: prompt,
               },
             ],
             role: "user",
@@ -60,6 +61,7 @@ const fetchGeminiReply = async (msg) => {
     const reply =
       response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "Sorry, no reply.";
+    console.log(`🤖: ${reply}`);
     return `🤖: ${reply}`;
   } catch (error) {
     console.error("Gemini API Error:", error.message);
@@ -104,22 +106,24 @@ async function connectWhatsAPP() {
     }
   });
 
+  socket.ev.on("messages.upsert", async ({ messages }) => {
+    for (const msg of messages) {
+      if (!msg.message || msg.key.fromMe || !isActiveHours()) return;
 
-socket.ev.on("messages.upsert", async ({ messages }) => {
-  for (const msg of messages) {
-    if (!msg.message || msg.key.fromMe || !isActiveHours()) return;
+      const text = extractMessageText(msg);
+      console.log(`📨 New message: ${msg.pushName} = ${text}`);
 
-    const text = extractMessageText(msg);
-    console.log(msg);
-    console.log(`📨 New message: ${msg.pushName} = ${text}`);
+      if (!text) return;
 
-      const reply = await fetchGeminiReply(text);
-      console.log(reply);
-      await socket.sendMessage(msg.key.remoteJid, { text: reply });
-  }
-});
+      if (msg.pushName !== "Full Stack Web Developer💜") {
+        const reply = await fetchGeminiReply(text, msg.pushName);
 
+        console.log(reply);
 
+        await socket.sendMessage(msg.key.remoteJid, { text: reply });
+      }
+    }
+  });
 }
 
 connectWhatsAPP();
