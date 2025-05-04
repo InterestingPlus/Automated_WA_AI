@@ -10,10 +10,29 @@ const axios = require("axios");
 
 const store = {};
 
+
+// server.js or index.js
+const express = require("express");
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (_, res) => {
+  res.send("🤖 WhatsApp AI Bot is running.");
+});
+
+app.listen(PORT, () => console.log(`✅ Web server listening on port ${PORT}`));
+
+
+
+
+
 const getMessage = (key) => {
   const { id } = key;
   return store[id]?.message;
 };
+
+const job = require("./cron");
+job.start();
 
 function isActiveHours() {
   const hour = new Date().getHours();
