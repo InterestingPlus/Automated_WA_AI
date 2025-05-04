@@ -82,6 +82,9 @@ async function connectWhatsAPP() {
 
   socket.ev.on("messages.upsert", async ({ messages }) => {
     for (const msg of messages) {
+
+      if (!msg.message || msg.key.fromMe) return;
+
       const text = extractMessageText(msg);
       console.log(msg);
       console.log(`📨 New message: ${msg.pushName} = ${text}`);
