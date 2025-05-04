@@ -15,6 +15,11 @@ const getMessage = (key) => {
   return store[id]?.message;
 };
 
+function isActiveHours() {
+  const hour = new Date().getHours();
+  return hour >= 7 && hour < 23;
+}
+
 const fetchGeminiReply = async (msg) => {
   try {
     const response = await axios.post(
@@ -80,24 +85,22 @@ async function connectWhatsAPP() {
     }
   });
 
-  socket.ev.on("messages.upsert", async ({ messages }) => {
-    for (const msg of messages) {
 
-      if (!msg.message || msg.key.fromMe) return;
+socket.ev.on("messages.upsert", async ({ messages }) => {
+  for (const msg of messages) {
+    if (!msg.message || msg.key.fromMe || !isActiveHours()) return;
 
-      const text = extractMessageText(msg);
-      console.log(msg);
-      console.log(`📨 New message: ${msg.pushName} = ${text}`);
+    const text = extractMessageText(msg);
+    console.log(msg);
+    console.log(`📨 New message: ${msg.pushName} = ${text}`);
 
-      if (msg.pushName !== "Full Stack Web Developer💜") {
-        const reply = await fetchGeminiReply(text);
+      const reply = await fetchGeminiReply(text);
+      console.log(reply);
+      await socket.sendMessage(msg.key.remoteJid, { text: reply });
+  }
+});
 
-        console.log(reply);
 
-        await socket.sendMessage(msg.key.remoteJid, { text: reply });
-      }
-    }
-  });
 }
 
 connectWhatsAPP();
