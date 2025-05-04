@@ -1,6 +1,6 @@
 {
   "name": "Jatin Poriya",
-  "nickname": "Bapu",
+  "nickname": "Developer",
   "location": "Rajula, Amreli, Gujarat",
   "languages": ["Gujarati", "Hinglish"],
   "education": "BCA at Gyanmangari Education Mahuva College",
@@ -8,9 +8,9 @@
   "skills": [
     "Full Stack Web Dev",
     "AI Tools Integration",
-    "Cybersecurity Learner",
     "React Native",
-    "MERN Stack"
+    "MERN Stack",
+    "Cybersecurity Learner"
   ],
   "projects": {
     "portfolio": "https://jatinporiya.netlify.app",
@@ -21,7 +21,7 @@
     "Clean UI",
     "Useful Real-World Projects",
     "Gemini / AI Tools",
-    "Cybersecurity with Ubuntu"
+    "Portfolio"
   ],
   "favQuotes": ["Hard work beats talent", "Coding is meditation"]
 }

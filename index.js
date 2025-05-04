@@ -61,7 +61,7 @@ const fetchGeminiReply = async (msg, senderName) => {
     const reply =
       response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
       "Sorry, no reply.";
-    console.log(`🤖: ${reply}`);
+
     return `🤖: ${reply}`;
   } catch (error) {
     console.error("Gemini API Error:", error.message);
@@ -77,15 +77,23 @@ async function connectWhatsAPP() {
     printQRInTerminal: true,
     auth: state,
     version,
-
     browser: ["Chrome", "Desktop", "121.0.0.0"],
     getMessage,
+    syncFullHistory: false,
   });
 
   socket.ev.on("creds.update", saveCreds);
 
   socket.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect } = update;
+
+    if (
+      connection === "close" &&
+      lastDisconnect?.error?.output?.payload?.type === "replaced"
+    ) {
+      console.log("Session replaced. Possibly another instance is running.");
+      // Optionally alert dev team or disable reconnection temporarily
+    }
 
     if (connection === "close") {
       const shouldReconnect =
