@@ -5,7 +5,7 @@ const job = new cron.CronJob("*/14 * * * *", function () {
   const hour = new Date().getHours();
   if (hour >= 7 && hour < 23) {
     https
-      .get("https://whatsapp-chatbot.onrender.com", (res) => {
+      .get("https://automated-wa-ai.onrender.com", (res) => {
         if (res.statusCode === 200)
           console.log("GET Request sent Successfully!");
         else console.log("GET Request failed!", res.statusCode);
