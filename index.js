@@ -29,10 +29,6 @@ const getMessage = (key) => {
 const job = require("./cron");
 job.start();
 
-function isActiveHours() {
-  const hour = new Date().getHours();
-  return hour >= 7 && hour < 23;
-}
 
 // 🤖 Gemini AI Handler
 const { buildPrompt } = require("./buildPropmt");
@@ -116,7 +112,7 @@ async function connectWhatsAPP() {
 
   socket.ev.on("messages.upsert", async ({ messages }) => {
     for (const msg of messages) {
-      if (!msg.message || msg.key.fromMe || !isActiveHours()) return;
+      if (!msg.message || msg.key.fromMe) return;
 
       const text = extractMessageText(msg);
       console.log(`📨 New message: ${msg.pushName} = ${text}`);
