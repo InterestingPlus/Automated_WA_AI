@@ -7,12 +7,14 @@ const job = new cron.CronJob("*/14 * * * *", function () {
     https
       .get("https://automated-wa-ai.onrender.com", (res) => {
         if (res.statusCode === 200)
-          console.log("GET Request sent Successfully!");
-        else console.log("GET Request failed!", res.statusCode);
+          console.log("!!✅!!GET Request sent Successfully!");
+        else console.log("!!✅!!GET Request failed!", res.statusCode);
       })
-      .on("error", (e) => console.error("Error while Sending request", e));
+      .on("error", (e) =>
+        console.error("!!✅!!Error while Sending request", e)
+      );
   } else {
-    console.log("Skipping ping during inactive hours");
+    console.log("!!✅!!Skipping ping during inactive hours");
   }
 });
 
