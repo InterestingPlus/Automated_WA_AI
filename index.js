@@ -122,9 +122,8 @@ async function connectWhatsAPP() {
 
   socket.ev.on("messages.upsert", async ({ messages }) => {
     for (const msg of messages) {
-      console.log(":::", msg);
-
       if (!msg.message || msg.key.fromMe || !isActiveHours()) return;
+      console.log(":::", msg);
 
       try {
         const msgId = msg.key.id;
