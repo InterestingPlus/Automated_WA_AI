@@ -164,7 +164,7 @@ async function connectWhatsAPP() {
         await socket.sendMessage(
           jid,
           {
-            text: "🤖 Auto-reply paused for 1 hour. Send any message to resume sooner.",
+            text: "🤖 Auto-reply paused for 5 hour.",
           },
           { quoted: msg }
         );
